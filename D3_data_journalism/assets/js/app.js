@@ -63,12 +63,9 @@ function successHandle(statesData) {
 
 
   // Append the axes to the chart group 
-  // Bottom axis moves using height 
   chartGroup.append("g")
     .attr("transform", `translate(0, ${svgHeight})`)
     .call(xAxis);
-  // Left axis is already at 0,0
-  // Only append the left axis 
   chartGroup.append("g")
     .call(yAxis);
 
@@ -80,26 +77,24 @@ function successHandle(statesData) {
     .append("circle")
     .attr("cx", d => xLinearScale(d.poverty))
     .attr("cy", d => yLinearScale(d.obesity))
-    .attr("r", "13")
-    .attr("fill", "#788dc2")
-    .attr("opacity", ".75")
+    .attr("r", "20")
+    .attr("fill", "#3cb44b")
+    .attr("opacity", ".5")
 
 
   // Append text to circles 
-
   var circlesGroup = chartGroup.selectAll()
     .data(statesData)
     .enter()
     .append("text")
     .attr("x", d => xLinearScale(d.poverty))
     .attr("y", d => yLinearScale(d.obesity))
-    .style("font-size", "13px")
+    .style("font-size", "12px")
     .style("text-anchor", "middle")
-    .style('fill', 'white')
+    .style('fill', 'black')
     .text(d => (d.abbr));
 
-  // Step 6: Initialize tool tip
-  // ==============================
+  // initialize hover tooltip
   var toolTip = d3.tip()
     .attr("class", "tooltip")
     .offset([80, -60])
@@ -107,12 +102,10 @@ function successHandle(statesData) {
       return (`${d.state}<br>Poverty: ${d.poverty}%<br>Obesity: ${d.obesity}% `);
     });
 
-  // Step 7: Create tooltip in the chart
-  // ==============================
+  // call on tooltip function
   chartGroup.call(toolTip);
 
   // Step 8: Create event listeners to display and hide the tooltip
-  // ==============================
   circlesGroup.on("mouseover", function (data) {
     toolTip.show(data, this);
   })
@@ -126,7 +119,7 @@ function successHandle(statesData) {
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left + 40)
     .attr("x", 0 - (svgHeight / 2))
-    .attr("dy", "1em")
+    .attr("dy", "2em")
     .attr("class", "axisText")
     .text("Obese (%)");
 
