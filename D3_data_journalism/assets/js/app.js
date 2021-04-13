@@ -1,5 +1,5 @@
 // Define SVG area dimensions
-var svgWidth = 960;
+var svgWidth = 800;
 var svgHeight = 560;
 
 // Define the chart's margins as an object
@@ -30,7 +30,12 @@ var chartGroup = svg.append("g")
 var file = "assets/data/data.csv"
 
 // Function is called and passes csv data
-d3.csv(file).then(successHandle);
+d3.csv(file).then(successHandle, errorHandle);
+
+
+function errorHandle(error) {
+  throw err;
+}
 
 
 //successHandle processes statesData
@@ -50,7 +55,7 @@ function successHandle(statesData) {
 
   var yLinearScale = d3.scaleLinear()
     .domain([20, d3.max(statesData, d => d.obesity)])
-    .range([svgHeight, 0]);
+    .range([chartHeight, 0]);
 
   // set limits to scale functions
 
@@ -64,8 +69,11 @@ function successHandle(statesData) {
 
   // Append the axes to the chart group 
   chartGroup.append("g")
-    .attr("transform", `translate(0, ${svgHeight})`)
+    .attr("transform", `translate(0, ${chartHeight})`)
     .call(xAxis);
+  
+  
+  
   chartGroup.append("g")
     .call(yAxis);
 
@@ -105,16 +113,15 @@ function successHandle(statesData) {
   // call on tooltip function
   chartGroup.call(toolTip);
 
-  // Step 8: Create event listeners to display and hide the tooltip
+  // create events to show and hide tooltip on mouse action
   circlesGroup.on("mouseover", function (data) {
     toolTip.show(data, this);
   })
-    // onmouseout event
     .on("mouseout", function (data) {
       toolTip.hide(data);
     });
 
-  // Create axes labels
+  // append axis labels
   chartGroup.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left + 40)
@@ -124,7 +131,8 @@ function successHandle(statesData) {
     .text("Obese (%)");
 
   chartGroup.append("text")
-    .attr("transform", `translate(${svgWidth / 2}, ${svgHeight + margin.top + 30})`)
+    .attr("transform", `translate(${chartWidth / 2.5}, ${chartHeight + margin.top + 30})`)
+    .attr("data-axis-name", "poverty")
     .attr("class", "axisText")
     .text("In Poverty (%)");
 }
